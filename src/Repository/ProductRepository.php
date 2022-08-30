@@ -51,13 +51,18 @@ class ProductRepository extends ServiceEntityRepository
             ->select('c','p')   // selectionne les 2 tables (catégorie / product)
             ->join('p.category', 'c'); // join la catégorie dans la table product et la catégorie dans la table catégorie
 
-            if (!empty($search->categories)) { // si catégorie alors je veux que tu ajoutes dans paramètres la catégorie avec son ID
+            if (!empty($search->categories)) { // si catégorie différent de vide alors je veux que tu ajoutes dans paramètres la catégorie  avec son ID
                 $query = $query //
                 ->andWhere('c.id IN (:categories)')  // rajoute les id des catégories dans catégories
                 ->setParameter('categories', // je veux que tu m'injectes les catégories
                 $search->categories);
             }
-            return $query->getQuery()->getResult();
+            if (!empty($search->string)) {
+                $query = $query
+                    ->andWhere('p.name LIKE :string')
+                    ->setParameter('string', "%$search->string%");
+            }
+            return $query->getQuery()->getResult(); // tu me créer la requête et tu me retournes le résultat
         }
     }
 
