@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon panier - La Boutique Française{% endblock %}
+
+{% block content %}
+<h1>Mon panier</h1>
+Retrouvez l'ensemble des produits que vous avez ajouté à votre panier
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th scope="col">Produit</th>
+            <th scope="col"></th>
+            <th scope="col">Quantité</th>
+            <th scope="col">Prix</th>
+            <th scope="col">Total</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for product in cartComplete %}
+        {{dump (product)}}
+        <tr>
+            <th>
+            <img src="/uploads/{{product.product.illustration}}" alt="Illustration" height="50px">
+            </th>
+            <td>       
+                {{product.product.name}} <br>
+                <small>{{product.product.subtitle}}</small>
+                
+            </td>
+            <td>
+                {{product.quantity}}
+            </td>
+            <td>{{product.product.price}}</td>
+            <td>{{((product.product.price) * (product.quantity) / 100) | number_format(2,',')}}€</td>
+            <td>
+
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
