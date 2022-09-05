@@ -54,9 +54,14 @@
                 {% if app.user %}
                     <a href="{{ path('account') }}">Mon compte <small>({{ app.user.firstname }})</small></a> | <a href="{{ path('app_logout') }}">Déconnexion</a>    
                 {% else %}
-                    <a href="{{ path('app_login') }}">Connexion</a> | <a href="{{ path('app_register') }}">Inscription</a>    
+                    <a href="{{ path('app_login') }}">Connexion</a> | <a href="{{ path('app_register') }}">Inscription</a>  
+
+            </a>  
                 {% endif %}
             </div>
+                <a href="{{ path('app_cart') }}">
+                <img src="{{ asset('assets/img/caddie.png') }}" class="cart-icon" alt="Mon panier">
+                </a>
         </div>
     </nav>
 </header>
