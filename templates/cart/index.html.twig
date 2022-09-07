@@ -31,7 +31,7 @@ Retrouvez l'ensemble des produits que vous avez ajouté à votre panier
                 
             </td>
             <td>
-                <a href="{{path('remove_my_cart', {'id':product.product.id})}}">
+                <a href="{{path('decrease_to_cart', {'id':product.product.id})}}">
                     <img src="{{asset ('assets/img/moins.png')}}" height="25px" alt="Retirer une quantité à mon produit">
                 </a>
                 x {{product.quantity}}

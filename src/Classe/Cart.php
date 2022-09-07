@@ -60,5 +60,24 @@ public function delete($id) {
     return $session->set('cart', $cart);
 }
 
+public function decrease($id)
+    {
+
+        $session=$this->requestStack->getSession();
+
+        $cart=$session->get('cart',[]);
+
+        if($cart[$id] > 1){
+
+            $cart[$id]--;
+
+        }else {
+            unset($cart[$id]);
+        }
+
+
+        $session->set('cart',$cart);
+
+    }
 
 }
