@@ -27,25 +27,80 @@ class AccountAddressController extends AbstractController
             
         ]);
     }
-
+    
+    // je passe le paramètre de ma root 
     #[Route('/compte/ajouter-une-adresse', name: 'account_address_add')]
     public function add(Request $request): Response
     {
         $address = new Address();
         $form = $this->createForm(AddressType::class, $address);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()){
             $address->setUser($this->getUser());
             // dd($address);
+
             // Fige la data
             $this->entityManager->persist($address);
+
             // Exécute
             $this->entityManager->Flush();
            return $this->redirectToRoute('account_address');
 
         }
-        return $this->render('account/address_add.html.twig', [
+        return $this->render('account/address_form.html.twig', [
             'form'=>$form->createView()
         ]);
     }
-}
+
+    // je passe le paramètre de ma root 
+    #[Route('/compte/modifier-une-adresse/{id}', name: 'account_address_edit')]
+    public function edit(Request $request, $id): Response
+    {
+        // je recup l'adresse concerné à l'aide de doctrine en base de donnés (id)
+        $address = $this->entityManager->getRepository(Address::class)->findOneById($id);
+
+        // Si il n'y a aucune adresse ou que l'utilisateur ne correspond pas à celui actuellement connecté
+        if (!$address || $address->getUser() != $this->getUser()) {
+            return $this->redirectToRoute('account_address');
+        }
+
+        $form = $this->createForm(AddressType::class, $address);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $address->setUser($this->getUser());
+            // dd($address);
+
+            // Exécute
+            $this->entityManager->Flush();
+           return $this->redirectToRoute('account_address');
+
+        }
+        return $this->render('account/address_form.html.twig', [
+            'form'=>$form->createView()
+        ]);
+    }
+
+    // je passe le paramètre de ma root 
+    #[Route('/compte/supprimer-une-adresse/{id}', name: 'account_address_delete')]
+    public function delete($id): Response
+    {
+        // je recup l'adresse concerné à l'aide de doctrine en base de donnés (id)
+        $address = $this->entityManager->getRepository(Address::class)->findOneById($id);
+
+        // Si il n'y a aucune adresse ou que l'utilisateur ne correspond pas à celui actuellement connecté
+        if (!$address || $address->getUser() == $this->getUser()) {
+            $this->entityManager->remove($address);
+        }
+
+            // dd($address);
+
+            // Exécute
+            $this->entityManager->Flush();
+           return $this->redirectToRoute('account_address');
+
+        }
+    }
+
