@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use DateTime;
+use Stripe\Stripe;
 use App\Classe\Cart;
 use App\Entity\Order;
 use App\Form\OrderType;
 use App\Entity\OrderDetails;
+use Stripe\Checkout\Session;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,6 +80,10 @@ class OrderController extends AbstractController
 
             // dd($carriers);
 
+
+            $reference = $date->format('dmY').'-'.uniqid();
+            $order->setReference($reference);
+
             // Enregistrer ma commande Order()
             $order->setUser($this->getUser());
 
@@ -97,7 +103,8 @@ class OrderController extends AbstractController
             $this->entityManager->persist($order);
 
             // Pour chaque produit que j'ai dans mon panier
-            
+           
+
             foreach($cart->getFull() as $product){
 
                 // Enregistrer mes produits OrderDetails()
@@ -110,14 +117,24 @@ class OrderController extends AbstractController
                
                 // Fige la data
                 $this->entityManager->persist($orderDetails);
+
+
             }
 
-                // $this->entityManager->flush();
+                $this->entityManager->flush();
+
+                // STRIP fait le lien entre la banque et notre site :D
+
+    
+                    
+                    // dump($checkout_session->id);
+                    // dd($checkout_session);
            
             return $this->render('order/add.html.twig', [
                 'cart' => $cart->getFull(),
                 'carrier' => $carriers,
-                'delivery' => $delivery_content
+                'delivery' => $delivery_content,
+                'reference' => $order->getReference()
             ]);
             
         }
@@ -127,4 +144,3 @@ class OrderController extends AbstractController
     }
         
 }
-
